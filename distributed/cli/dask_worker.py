@@ -178,6 +178,7 @@ pem_file_option_type = click.Path(exists=True, resolve_path=True)
 @click.argument(
     "preload_argv", nargs=-1, type=click.UNPROCESSED, callback=validate_preload_argv
 )
+@click.option("--debug/--no-debug", default=False, help="Print stack trace on USR1")
 def main(
     scheduler,
     host,
@@ -206,7 +207,20 @@ def main(
     tls_cert,
     tls_key,
     dashboard_address,
+    debug,
 ):
+    if debug:
+        import traceback
+        import signal
+        import sys
+        import os
+        def handle_signal(signal, frame):
+            for thread, frame in sys._current_frames().items():
+                traceback.print_stack(frame)
+                print()
+        signal.signal(signal.SIGUSR1, handle_signal)
+        print(f'For stacktrace: kill -s SIGUSR1 {os.getpid()}', file=sys.stderr)
+
     enable_proctitle_on_current()
     enable_proctitle_on_children()
 
