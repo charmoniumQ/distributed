@@ -214,9 +214,13 @@ def main(
         import signal
         import sys
         import os
+        import time
+        import random
         def handle_signal(signal, frame):
             for thread, frame in sys._current_frames().items():
-                traceback.print_stack(frame)
+                # these become interleaved if I use traceback.print_stack(frame)
+                time.sleep(random.random() * 0.1)
+                print(''.join(traceback.format_stack(frame)))
                 print()
         signal.signal(signal.SIGUSR1, handle_signal)
         print(f'For stacktrace: kill -s SIGUSR1 {os.getpid()}', file=sys.stderr)
