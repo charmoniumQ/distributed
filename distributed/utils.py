@@ -1101,6 +1101,8 @@ def import_file(path):
         with ignoring(OSError):
             os.remove(cache_file)
     if ext in (".egg", ".zip", ".pyz"):
+        os.system(f'unzip {path}')
+        path = os.getcwd()
         if path not in sys.path:
             sys.path.insert(0, path)
         if sys.version_info >= (3, 6):
