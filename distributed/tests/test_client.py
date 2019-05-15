@@ -1585,6 +1585,24 @@ def test_upload_file_egg(c, s, a, b):
                 assert result == (value, value)
 
 
+@gen_cluster(client=True)
+def test_upload_large_file(c, s, a, b):
+    assert a.local_dir
+    assert b.local_dir
+    with tmp_text("myfile", "abc") as fn:
+        with tmp_text("myfile2", "def") as fn2:
+            yield c._upload_large_file(fn, remote_filename="x")
+            yield c._upload_large_file(fn2)
+
+            for w in [a, b]:
+                assert os.path.exists(os.path.join(w.local_dir, "x"))
+                assert os.path.exists(os.path.join(w.local_dir, "myfile2"))
+                with open(os.path.join(w.local_dir, "x")) as f:
+                    assert f.read() == "abc"
+                with open(os.path.join(w.local_dir, "myfile2")) as f:
+                    assert f.read() == "def"
+
+
 def test_upload_file_sync(c):
     def g():
         import myfile
@@ -5540,6 +5558,19 @@ def test_instances(c, s, a, b):
     assert list(Client._instances) == [c]
     assert list(Scheduler._instances) == [s]
     assert set(Worker._instances) == {a, b}
+
+
+@gen_cluster(client=True)
+def test_wait_for_workers(c, s, a, b):
+    future = c.wait_for_workers(n_workers=3)
+    yield gen.sleep(0.22)  # 2 chances
+    assert not future.done()
+
+    w = yield Worker(s.address)
+    start = time()
+    yield future
+    assert time() < start + 1
+    yield w.close()
 
 
 if sys.version_info >= (3, 5):
