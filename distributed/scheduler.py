@@ -1361,7 +1361,8 @@ class Scheduler(ServerNode):
 
         self.host_info[host]["last-seen"] = local_now
         frac = 1 / 20 / len(self.workers)
-        self.bandwidth = self.bandwidth * (1 - frac) + metrics["bandwidth"] * frac
+        if 'bandwidth' in metrics:
+            self.bandwidth = self.bandwidth * (1 - frac) + metrics["bandwidth"] * frac
 
         ws = self.workers.get(address)
         if not ws:
