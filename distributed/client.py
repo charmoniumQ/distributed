@@ -658,6 +658,8 @@ class Client(Node):
             with ignoring(AttributeError):
                 loop = address.loop
 
+        logging.info("2 %s", address)
+
         self._connecting_to_scheduler = False
         self._asynchronous = asynchronous
         self._should_close_loop = not loop
@@ -949,6 +951,7 @@ class Client(Node):
             address = self.cluster.scheduler_address
 
         if self.scheduler is None:
+            logging.info("1 %s", address)
             self.scheduler = self.rpc(address)
         self.scheduler_comm = None
 
