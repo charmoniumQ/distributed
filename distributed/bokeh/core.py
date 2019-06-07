@@ -3,10 +3,14 @@ from __future__ import print_function, division, absolute_import
 from distutils.version import LooseVersion
 import os
 import warnings
+import logging
 
 import bokeh
 from bokeh.server.server import Server
 from tornado import web
+
+
+logger = logging.getLogger(__name__)
 
 
 if LooseVersion(bokeh.__version__) < LooseVersion("0.13.0"):
@@ -51,6 +55,8 @@ class BokehServer(object):
                 ]
 
                 self.server._tornado.add_handlers(r".*", handlers)
+
+                print("  Bokeh dashboard at: %s:%d", ip, port)
 
                 return
             except (SystemExit, EnvironmentError) as exc:
