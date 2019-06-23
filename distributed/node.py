@@ -117,7 +117,8 @@ class ServerNode(Node, Server):
                     (listen_ip if listen_ip is not None else default_listen_ip, port)
                 )
                 self.services[k] = service
-                print("Service '%s' on port %s:%s", k, listen_ip if listen_ip is not None else default_listen_ip, port)
+                print('hi')
+                logger.debug("Service '%s' on port %s:%s", k, listen_ip if listen_ip is not None else default_listen_ip, port)
             except Exception as e:
                 warnings.warn(
                     "\nCould not launch service '%s' on port %s. " % (k, port)

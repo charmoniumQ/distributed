@@ -658,8 +658,6 @@ class Client(Node):
             with ignoring(AttributeError):
                 loop = address.loop
 
-        logging.info("2 %s", address)
-
         self._connecting_to_scheduler = False
         self._asynchronous = asynchronous
         self._should_close_loop = not loop

@@ -25,6 +25,7 @@ class BokehServer(object):
     server_kwargs = {}
 
     def listen(self, addr):
+        logger.info('  Bokeh.listen')
         if self.server:
             return
         if isinstance(addr, tuple):
@@ -56,7 +57,7 @@ class BokehServer(object):
 
                 self.server._tornado.add_handlers(r".*", handlers)
 
-                print("  Bokeh dashboard at: %s:%d", ip, port)
+                logger.info("  Bokeh dashboard at: %s:%d", ip, port)
 
                 return
             except (SystemExit, EnvironmentError) as exc:

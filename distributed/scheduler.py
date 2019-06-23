@@ -876,6 +876,7 @@ class Scheduler(ServerNode):
         self.listen_args = self.security.get_listen_args("scheduler")
 
         if dashboard_address is not None:
+            logger.debug("bokeh requested")
             try:
                 from distributed.bokeh.scheduler import BokehScheduler
             except ImportError:
